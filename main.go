@@ -56,15 +56,15 @@ func runServer(useHttps *bool, certFile, keyFile *string) {
 	})
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		auditId := sanitizeHeader(r.Header.Get("AuditId"))
-		buildId := sanitizeHeader(r.Header.Get("BuildId"))
+		auditId := sanitizeHeader(r.Header.Get("Audit-ID"))
+		buildId := sanitizeHeader(r.Header.Get("Cluster-ID"))
 
 		if auditId == "" || buildId == "" {
-			http.Error(w, fmt.Sprintf("Invalid request format: auditId=(%v) buildId=(%v)", auditId, buildId), http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("Invalid request format: Audit-ID=(%v) Cluster-ID=(%v)", auditId, buildId), http.StatusBadRequest)
 			return
 		}
 
-		logger.Infof("HTTP get received: AuditId: %s, BuildId: %s", auditId, buildId)
+		logger.Infof("HTTP get received: Audit-ID: %s, Cluster-ID: %s", auditId, buildId)
 		w.WriteHeader(http.StatusOK)
 	})
 
@@ -118,10 +118,10 @@ func sendRequest(clientID int, logger *logrus.Logger) {
 	source := rand.NewSource(time.Now().UnixNano())
 	random := rand.New(source)
 	randomNumber := random.Intn(1000000) + 1
-	req.Header.Add("AuditId", strconv.Itoa(randomNumber))
+	req.Header.Add("Audit-ID", strconv.Itoa(randomNumber))
 
 	randomNumber = random.Intn(3) + 2
-	req.Header.Add("BuildId", "build0"+strconv.Itoa(randomNumber))
+	req.Header.Add("Cluster-ID", "build0"+strconv.Itoa(randomNumber))
 
 	resp, err := client.Do(req)
 	if err != nil {

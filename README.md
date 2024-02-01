@@ -39,7 +39,7 @@ $ go run main.go -mode client -count 20
 or single client with `curl`:
 
 ```bash
-curl -X GET http://localhost:49888/health -H "AuditId: 12345" -H "BuildId: build02"
+curl -X GET http://localhost:49888/health -H "Audit-ID: 12345" -H "Cluster-ID: build02"
 ```
 
 
@@ -59,6 +59,6 @@ Once you determine your endpoint DNS entry, you can test the server like this:
 
 ```
 $ url=<get this from your cloud>
-$ echo $(curl -sk -w "%{http_code}" -o response.txt -H "AuditId: 12345" -H "BuildId: build03" "$url")
+$ echo $(curl -sk -w "%{http_code}" -o response.txt -H "Audit-ID: 12345" -H "Cluster-ID: build03" "$url")
 200
 ```

@@ -16,16 +16,16 @@ func init() {
 
 // OpenshiftTestsEndpoint handles the incoming HTTP request.
 func OpenshiftTestsEndpoint(w http.ResponseWriter, r *http.Request) {
-	auditId := sanitizeHeader(r.Header.Get("AuditId"))
-	buildId := sanitizeHeader(r.Header.Get("BuildId"))
+	auditId := sanitizeHeader(r.Header.Get("Audit-ID"))
+	buildId := sanitizeHeader(r.Header.Get("Cluster-ID"))
 
 	if auditId == "" || buildId == "" {
-		http.Error(w, fmt.Sprintf("Invalid request format: auditId=(%v) buildId=(%v)", auditId, buildId), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Invalid request format: Audit-ID=(%v) Cluster-ID=(%v)", auditId, buildId), http.StatusBadRequest)
 		return
 	}
 
 	currentTime := time.Now().UTC()
-	fmt.Printf("HTTP get received: AuditId: %s, BuildId: %s, Current Time (UTC): %s", auditId, buildId, currentTime)
+	fmt.Printf("HTTP get received: Audit-ID: %s, Cluster-ID: %s, Current Time (UTC): %s", auditId, buildId, currentTime)
 	w.WriteHeader(http.StatusOK)
 }
 
