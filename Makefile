@@ -1,7 +1,7 @@
 all: build
 
 build:
-	go build .
+	go build ./cmd/endpoint_server/
 
 clean:
-	rm -f openshift-tests-endpoint
+	rm -f endpoint_server

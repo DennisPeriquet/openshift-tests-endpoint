@@ -31,14 +31,13 @@ func RunServer(useHttps *bool, certFile, keyFile *string, port int) {
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		auditId := sanitizeHeader(r.Header.Get("Audit-ID"))
-		buildId := sanitizeHeader(r.Header.Get("Cluster-ID"))
 
-		if auditId == "" || buildId == "" {
-			http.Error(w, fmt.Sprintf("Invalid request format: Audit-ID=(%v) Cluster-ID=(%v)", auditId, buildId), http.StatusBadRequest)
+		if auditId == "" {
+			http.Error(w, fmt.Sprintf("Invalid request format: Audit-ID=(%v)", auditId), http.StatusBadRequest)
 			return
 		}
 
-		logger.Infof("HTTP get received: Audit-ID: %s, Cluster-ID: %s", auditId, buildId)
+		logger.Infof("HTTP get received: Audit-ID: %s", auditId)
 		w.WriteHeader(http.StatusOK)
 	})
 
@@ -93,9 +92,6 @@ func sendRequest(clientID int, logger *logrus.Logger, port int) {
 	random := rand.New(source)
 	randomNumber := random.Intn(1000000) + 1
 	req.Header.Add("Audit-ID", strconv.Itoa(randomNumber))
-
-	randomNumber = random.Intn(3) + 2
-	req.Header.Add("Cluster-ID", "build0"+strconv.Itoa(randomNumber))
 
 	resp, err := client.Do(req)
 	if err != nil {
