@@ -69,3 +69,19 @@ $ url=<get this from your cloud>
 $ echo $(curl -sk -w "%{http_code}" -o response.txt -H "Audit-ID: 12345" "$url")
 200
 ```
+
+## Run as a container
+
+Examples for quay.io and docker.io:
+
+```bash
+VER=0.1
+QUAY_USER=`whoami`
+podman build -t quay.io/${QUAY_USER}/openshift_tests_endpoint:${VER} .
+podman tag quay.io/${QUAY_USER}/openshift_tests_endpoint:0.1 docker.io/${QUAY_USER}/openshift_tests_endpoint:0.1
+podman push  ${QUAY_USER}/openshift_tests_endpoint:0.1
+podman push quay.io/${QUAY_USER}/openshift_tests_endpoint:${VER}
+podman run --name openshift_endpoint_server -d -p 49888:49888 quay.io/${QUAY_USER}/openshift_tests_endpoint:0.1
+podman run --name openshift_endpoint_server -d -p 49888:49888 docker.io/${QUAY_USER}/openshift_tests_endpoint:0.1
+podman logs -f openshift_endpoint_server
+```
