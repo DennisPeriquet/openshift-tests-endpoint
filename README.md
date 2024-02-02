@@ -6,15 +6,22 @@ endpoints in specific clouds during openshift-test runs.  There are two versions
 * Run on a VM
 * Run in a [cloud function](https://cloud.google.com/functions/docs/writing/write-http-functions)
 
+## Building
+
+```bash
+make clean
+make build
+```
+
 ## Run as a VM
 
 ### Run the server
 
 ```go
-$ go run main.go -mode server
+$ ./openshift-tests-endpoint -mode server
 
 # Get help
-$ go run main.go -h
+$ ./openshift-tests-endpoint -h
 Usage of main:
   -cert string
     	TLS certificate file (default "./cert.pem")
@@ -33,7 +40,7 @@ Usage of main:
 Start 20 clients:
 
 ```go
-$ go run main.go -mode client -count 20
+$ ./openshift-tests-endpoint -mode client -count 20
 ```
 
 or single client with `curl`:

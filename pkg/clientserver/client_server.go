@@ -1,41 +1,15 @@
-package main
+package clientserver
 
 import (
-	"flag"
 	"fmt"
 	"math/rand"
 	"net/http"
-	"os"
 	"regexp"
 	"strconv"
 	"time"
 
 	"github.com/sirupsen/logrus"
 )
-
-const (
-	port           = 49888
-	defaultCertPem = "./cert.pem"
-	defaultKeyPem  = "./key.pem"
-)
-
-func main() {
-	mode := flag.String("mode", "", "run in 'client' or 'server' mode")
-	clientCount := flag.Int("count", 1, "number of clients to run in client mode")
-	useHTTPS := flag.Bool("https", false, "use HTTPS (default HTTP)")
-	certFile := flag.String("cert", defaultCertPem, "TLS certificate file")
-	keyFile := flag.String("key", defaultKeyPem, "TLS private key file")
-
-	flag.Parse()
-
-	if *mode == "server" {
-		runServer(useHTTPS, certFile, keyFile)
-	} else if *mode == "client" {
-		runClient(*clientCount)
-	} else {
-		fmt.Printf("Usage: %s -mode [client|server] [-count n] [-https]\n", os.Args[0])
-	}
-}
 
 // sanitizeHeader removes any characters from the header value that are not
 // alphanumeric, hyphens, or underscores.
@@ -48,7 +22,7 @@ func sanitizeHeader(headerValue string) string {
 }
 
 // runServer is the listens to HTTP requests and logs the request headers.
-func runServer(useHttps *bool, certFile, keyFile *string) {
+func RunServer(useHttps *bool, certFile, keyFile *string, port int) {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat: time.RFC3339,
@@ -85,7 +59,7 @@ func runServer(useHttps *bool, certFile, keyFile *string) {
 
 // runClient runs a number of clients (n) that send HTTP requests to the server.
 // This is just a test client to help debug the server.
-func runClient(count int) {
+func RunClient(count, port int) {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat: time.RFC3339,
@@ -96,7 +70,7 @@ func runClient(count int) {
 		go func(clientID int) {
 			ticker := time.NewTicker(1 * time.Second)
 			for range ticker.C {
-				sendRequest(clientID, logger)
+				sendRequest(clientID, logger, port)
 			}
 		}(i)
 	}
@@ -106,7 +80,7 @@ func runClient(count int) {
 
 // sendRequest sends an HTTP GET request to the server and logs the response.
 // This is just a way to simulate client requests to the server.
-func sendRequest(clientID int, logger *logrus.Logger) {
+func sendRequest(clientID int, logger *logrus.Logger, port int) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", fmt.Sprintf("http://localhost:%d/health", port), nil)
 	if err != nil {
