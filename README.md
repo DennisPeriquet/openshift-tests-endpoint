@@ -46,7 +46,7 @@ $ ./openshift-tests-endpoint -mode client -count 20
 or single client with `curl`:
 
 ```bash
-curl -X GET http://localhost:49888/health -H "Audit-ID: 12345"
+curl -X GET http://localhost:80/health -H "Audit-ID: 12345"
 ```
 
 
@@ -81,7 +81,7 @@ podman build -t quay.io/${QUAY_USER}/openshift_tests_endpoint:${VER} .
 podman tag quay.io/${QUAY_USER}/openshift_tests_endpoint:0.1 docker.io/${QUAY_USER}/openshift_tests_endpoint:0.1
 podman push  ${QUAY_USER}/openshift_tests_endpoint:0.1
 podman push quay.io/${QUAY_USER}/openshift_tests_endpoint:${VER}
-podman run --name openshift_endpoint_server -d -p 49888:49888 quay.io/${QUAY_USER}/openshift_tests_endpoint:0.1
-podman run --name openshift_endpoint_server -d -p 49888:49888 docker.io/${QUAY_USER}/openshift_tests_endpoint:0.1
+podman run --name openshift_endpoint_server -d -p 80:80 quay.io/${QUAY_USER}/openshift_tests_endpoint:0.1
+podman run --name openshift_endpoint_server -d -p 80:80 docker.io/${QUAY_USER}/openshift_tests_endpoint:0.1
 podman logs -f openshift_endpoint_server
 ```

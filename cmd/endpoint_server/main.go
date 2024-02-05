@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	port           = 49888
+	port           = 80
 	defaultCertPem = "./cert.pem"
 	defaultKeyPem  = "./key.pem"
 )
