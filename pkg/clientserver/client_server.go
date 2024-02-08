@@ -29,6 +29,10 @@ func RunServer(useHttps *bool, certFile, keyFile *string, port int) {
 		FullTimestamp:   true,
 	})
 
+	http.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		auditId := sanitizeHeader(r.Header.Get("Audit-ID"))
 

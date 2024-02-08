@@ -75,13 +75,22 @@ $ echo $(curl -sk -w "%{http_code}" -o response.txt -H "Audit-ID: 12345" "$url")
 Examples for quay.io and docker.io:
 
 ```bash
-VER=0.1
 QUAY_USER=`whoami`
-podman build -t quay.io/${QUAY_USER}/openshift_tests_endpoint:${VER} .
-podman tag quay.io/${QUAY_USER}/openshift_tests_endpoint:0.1 docker.io/${QUAY_USER}/openshift_tests_endpoint:0.1
-podman push  ${QUAY_USER}/openshift_tests_endpoint:0.1
-podman push quay.io/${QUAY_USER}/openshift_tests_endpoint:${VER}
-podman run --name openshift_endpoint_server -d -p 80:80 quay.io/${QUAY_USER}/openshift_tests_endpoint:0.1
-podman run --name openshift_endpoint_server -d -p 80:80 docker.io/${QUAY_USER}/openshift_tests_endpoint:0.1
+podman build -t quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER} .
+podman tag quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER} docker.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
+podman push  ${QUAY_USER}/openshift_tests_endpoint:${cat VER}
+podman push quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
+podman run --name openshift_endpoint_server -d -p 80:80 quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
+podman run --name openshift_endpoint_server -d -p 80:80 docker.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
 podman logs -f openshift_endpoint_server
+```
+
+Using the [Makefile](./Makefile):
+
+```bash
+make clean
+make build
+make podman-build
+make podman-tag
+make podman-push
 ```
