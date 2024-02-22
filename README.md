@@ -74,14 +74,21 @@ $ echo $(curl -sk -w "%{http_code}" -o response.txt -H "Audit-ID: 12345" "$url")
 
 Examples for quay.io and docker.io:
 
+I've been using these and pushing to docker.io instead of quay.io:
+
 ```bash
 QUAY_USER=`whoami`
-podman build -t quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER} .
-podman tag quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER} docker.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
-podman push  ${QUAY_USER}/openshift_tests_endpoint:${cat VER}
-podman push quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
-podman run --name openshift_endpoint_server -d -p 80:80 quay.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
-podman run --name openshift_endpoint_server -d -p 80:80 docker.io/${QUAY_USER}/openshift_tests_endpoint:${cat VER}
+podman build -t quay.io/${QUAY_USER}/openshift_tests_endpoint:$(cat VER) .
+podman tag quay.io/${QUAY_USER}/openshift_tests_endpoint:$(cat VER) ${QUAY_USER}/openshift_tests_endpoint:$(cat VER)
+podman push  ${QUAY_USER}/openshift_tests_endpoint:$(cat VER)
+```
+
+But here are examples for quay.io:
+
+```bash
+podman push quay.io/${QUAY_USER}/openshift_tests_endpoint:$(cat VER)
+podman run --name openshift_endpoint_server -d -p 80:80 quay.io/${QUAY_USER}/openshift_tests_endpoint:$(cat VER)
+podman run --name openshift_endpoint_server -d -p 80:80 ${QUAY_USER}/openshift_tests_endpoint:$(cat VER)
 podman logs -f openshift_endpoint_server
 ```
 

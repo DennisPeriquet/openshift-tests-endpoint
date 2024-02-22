@@ -41,7 +41,11 @@ func RunServer(useHttps *bool, certFile, keyFile *string, port int) {
 			return
 		}
 
-		logger.Infof("HTTP get received: Audit-ID: %s", auditId)
+		// Don't log anything to ensure logs never get big.
+		// If you want to know it works, then just send a request and look for a 200 OK.
+		// url=http://x.x.x.x/health
+		// echo $(curl -sk -w "%{http_code}" -o response.txt -H "Audit-ID: 12345" "$url")
+		//logger.Infof("HTTP get received: Audit-ID: %s", auditId)
 		w.WriteHeader(http.StatusOK)
 	})
 
